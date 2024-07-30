@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Reservation, ReservationStatus } from './reservation.entity';
@@ -13,7 +17,7 @@ export class ReservationService {
     @InjectRepository(Reservation)
     private readonly reservationRepository: Repository<Reservation>,
     private readonly regionService: RegionService,
-    private readonly availabilityService: RestaurantAvailabilityService,
+    private readonly availabilityService: RestaurantAvailabilityService
   ) {}
 
   async onModuleInit() {
@@ -41,7 +45,7 @@ export class ReservationService {
         time: '20:00',
         region: '2',
         status: ReservationStatus.CONFIRMED,
-        hashId:   uuidv4(), // Generar un hashId único para cada reserva
+        hashId: uuidv4(), // Generar un hashId único para cada reserva
         createdAt: new Date().toISOString(), // Fecha y hora actuales
       };
 
@@ -52,7 +56,9 @@ export class ReservationService {
     await this.reservationRepository.save(reservations);
   }
 
-  async createReservation(reservationData: Partial<Reservation>): Promise<Reservation> {
+  async createReservation(
+    reservationData: Partial<Reservation>
+  ): Promise<Reservation> {
     const reservation = this.reservationRepository.create(reservationData);
     return this.reservationRepository.save(reservation);
   }
@@ -62,7 +68,9 @@ export class ReservationService {
   }
 
   async getReservationById(hashId: string): Promise<Reservation> {
-    const reservation = await this.reservationRepository.findOne({ where: { hashId } });
+    const reservation = await this.reservationRepository.findOne({
+      where: { hashId },
+    });
 
     if (!reservation) {
       throw new NotFoundException(`Reservation not found`);
@@ -78,22 +86,34 @@ export class ReservationService {
     today.setHours(0, 0, 0, 0); // Reset time to the start of the day
 
     if (reservationDate < today) {
-      throw new ForbiddenException(`Reservation cannot be accessed. The date is in the past.`);
+      throw new ForbiddenException(
+        `Reservation cannot be accessed. The date is in the past.`
+      );
     }
 
     return reservation;
   }
 
-  async updateReservation(hashId: string, updateData: Partial<Reservation>): Promise<Reservation> {
+  async updateReservation(
+    hashId: string,
+    updateData: Partial<Reservation>
+  ): Promise<Reservation> {
     await this.reservationRepository.update({ hashId }, updateData);
     return this.getReservationById(hashId);
   }
 
   async cancelReservation(hashId: string): Promise<void> {
-    await this.reservationRepository.update({ hashId }, { status: ReservationStatus.CANCELLED });
+    await this.reservationRepository.update(
+      { hashId },
+      { status: ReservationStatus.CANCELLED }
+    );
   }
 
-  async checkAvailability(date: string, region: string, email: string): Promise<boolean> {
+  async checkAvailability(
+    date: string,
+    region: string,
+    email: string
+  ): Promise<boolean> {
     // Check if there are confirmed reservations in the specified region
     const regionAvailability = await this.reservationRepository.count({
       where: {
@@ -118,98 +138,104 @@ export class ReservationService {
     return regionAvailability === 0 && emailAvailability === 0;
   }
 
-        async suggestAlternativeDates(
-          reservationData: {
-            date: string;
-            region: string;
-            email: string;
-            partySize: number;
-            smoking: boolean;
-            childrenCount: number;
-          }
-        ): Promise<{ region: Region; date: string }[]> {
-          const { date, region, email, partySize, smoking, childrenCount } = reservationData;
-      
-          // Obtener todas las fechas en las que el usuario tiene reservas confirmadas
-          const userReservations = await this.reservationRepository.find({
+  async suggestAlternativeDates(reservationData: {
+    date: string;
+    region: string;
+    email: string;
+    partySize: number;
+    smoking: boolean;
+    childrenCount: number;
+  }): Promise<{ region: Region; date: string }[]> {
+    const { date, region, email, partySize, smoking, childrenCount } =
+      reservationData;
+
+    // Obtener todas las fechas en las que el usuario tiene reservas confirmadas
+    const userReservations = await this.reservationRepository.find({
+      where: {
+        email,
+        status: ReservationStatus.CONFIRMED,
+      },
+    });
+
+    const reservedDates = new Set(userReservations.map((r) => r.date));
+
+    // Obtener todas las regiones disponibles
+    const regions = await this.regionService.findAll();
+
+    // Obtener fechas disponibles
+    const allDates = await this.availabilityService.getAvailableDates();
+
+    // Filtrar fechas disponibles, excluyendo las fechas reservadas por el usuario
+    const availableDates = allDates.filter((d) => !reservedDates.has(d));
+
+    const alternativeDates: { region: Region; date: string }[] = [];
+
+    const availableRegion = await this.reservationRepository
+      .createQueryBuilder('reservation')
+      .select('reservation.region')
+      .where('reservation.date = :date', { date })
+      .andWhere('reservation.status = :status', {
+        status: ReservationStatus.CONFIRMED,
+      })
+      .andWhere('reservation.region <> :region', { region })
+      .getOne();
+
+    if (availableRegion) {
+      const regionData = regions.find((r) => r.name === availableRegion.region);
+      if (regionData) {
+        alternativeDates.push({ region: regionData, date });
+      }
+    }
+
+    if (alternativeDates.length < 2) {
+      const sortedDates = availableDates.sort(
+        (a, b) =>
+          Math.abs(new Date(date).getTime() - new Date(a).getTime()) -
+          Math.abs(new Date(date).getTime() - new Date(b).getTime())
+      );
+
+      for (const nextDate of sortedDates) {
+        if (alternativeDates.length >= 2) break;
+
+        const isRegionAvailable = async (regionName: string) => {
+          const region = regions.find((r) => r.name === regionName);
+          if (!region) return false;
+
+          const isAvailable = await this.reservationRepository.count({
             where: {
-              email,
+              date: nextDate,
+              region: regionName,
               status: ReservationStatus.CONFIRMED,
+              partySize,
+              smoking,
+              childrenCount,
             },
           });
-      
-          const reservedDates = new Set(userReservations.map(r => r.date));
-      
-          // Obtener todas las regiones disponibles
-          const regions = await this.regionService.findAll();
-      
-          // Obtener fechas disponibles
-          const allDates = await this.availabilityService.getAvailableDates();
-          
-          // Filtrar fechas disponibles, excluyendo las fechas reservadas por el usuario
-          const availableDates = allDates.filter(d => !reservedDates.has(d));
-      
-          const alternativeDates: { region: Region; date: string }[] = [];
-      
-          const availableRegion = await this.reservationRepository
-            .createQueryBuilder('reservation')
-            .select('reservation.region')
-            .where('reservation.date = :date', { date })
-            .andWhere('reservation.status = :status', { status: ReservationStatus.CONFIRMED })
-            .andWhere('reservation.region <> :region', { region })
-            .getOne();
-      
-          if (availableRegion) {
-            const regionData = regions.find(r => r.name === availableRegion.region);
-            if (regionData) {
-              alternativeDates.push({ region: regionData, date });
-            }
-          }
-      
-          if (alternativeDates.length < 2) {
-            const sortedDates = availableDates.sort((a, b) =>
-              Math.abs(new Date(date).getTime() - new Date(a).getTime()) - Math.abs(new Date(date).getTime() - new Date(b).getTime())
-            );
-      
-            for (const nextDate of sortedDates) {
-              if (alternativeDates.length >= 2) break;
-      
-              const isRegionAvailable = async (regionName: string) => {
-                const region = regions.find(r => r.name === regionName);
-                if (!region) return false;
-      
-                const isAvailable = await this.reservationRepository.count({
-                  where: {
-                    date: nextDate,
-                    region: regionName,
-                    status: ReservationStatus.CONFIRMED,
-                    partySize,
-                    smoking,
-                    childrenCount,
-                  },
-                });
-      
-                return isAvailable === 0;
-              };
-      
-              if (await isRegionAvailable(region)) {
-                const regionData = regions.find(r => r.name === region);
-                if (regionData) {
-                  alternativeDates.push({ region: regionData, date: nextDate });
-                }
-              } else {
-                // Si la región original no está disponible, buscar en otras regiones
-                for (const r of regions) {
-                  if (await isRegionAvailable(r.name)) {
-                    alternativeDates.push({ region: r, date: nextDate });
-                    break;
-                  }
-                }
-              }
-            }
-          }
-      
-          return alternativeDates;
-        }
-}
 
+          return isAvailable === 0;
+        };
+
+        if (await isRegionAvailable(region)) {
+          const regionData = regions.find((r) => r.name === region);
+          if (regionData) {
+            alternativeDates.push({ region: regionData, date: nextDate });
+          }
+        } else {
+          // Si la región original no está disponible, buscar en otras regiones
+          for (const r of regions) {
+            if (await isRegionAvailable(r.name)) {
+              alternativeDates.push({ region: r, date: nextDate });
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    if (alternativeDates.length === 0) {
+      throw new NotFoundException(`We are sorry to inform that the region is not available and the are no other suggestions.`);
+    }
+
+    return alternativeDates;
+  }
+}

@@ -120,7 +120,6 @@ export class RegionComponent implements OnDestroy {
     this.reservation.region = event.region.id;
     this.regionFormGroup.get('region')?.setValue(event.region.id);
     this.checkAvaibility();
-    console.log('hola');
   }
 
   /**
@@ -130,7 +129,6 @@ export class RegionComponent implements OnDestroy {
    */
   public checkAvaibility(): void {
     this.alternativeDates = [];
-    console.log(this.reservation);
     if (this.reservation) {
       const { date, email } = this.reservation;
       const { region } = this.regionFormGroup.value;
