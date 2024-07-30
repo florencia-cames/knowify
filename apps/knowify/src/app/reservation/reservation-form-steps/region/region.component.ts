@@ -50,7 +50,6 @@ export class RegionComponent implements OnDestroy {
         switchMap((data: Reservation) => {
           return this._reservationService.getRegions().pipe(
             map((regions) => {
-              console.log(this.reservation);
               this.reservation = data;
               if (!data) return regions;
               return regions.filter((region) => {
@@ -119,6 +118,7 @@ export class RegionComponent implements OnDestroy {
     this.reservation.date = event.date;
     this.reservation.region = event.region.id;
     this.regionFormGroup.get('region')?.setValue(event.region.id);
+    this.regionFormGroup.updateValueAndValidity();
     this.checkAvaibility();
   }
 
