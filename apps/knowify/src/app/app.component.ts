@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { LoadingService } from './services/loading.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Observable } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -13,7 +14,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 })
 export class AppComponent {
   title = 'knowify';
-  public loading$: any;
+  public loading$: Observable<boolean>;
   public isMenuOpen = false;
 
   constructor(private readonly loadingService: LoadingService) {

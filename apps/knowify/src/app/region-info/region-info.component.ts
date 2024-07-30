@@ -10,6 +10,6 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./region-info.component.scss']
 })
 export class RegionInfoComponent {
-  @Input() regionName: string = '';
-  @Input() tooltipText: string = '';
+  @Input() regionName = '';
+  @Input() tooltipText = '';
 }

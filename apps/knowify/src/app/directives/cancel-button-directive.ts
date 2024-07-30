@@ -6,7 +6,7 @@ import { ReservationService } from '../reservation/reservation.service';
   standalone: true
 })
 export class CancelButtonDirective {
-  @Input('appCancelButton') reservation: any; // Ajusta el tipo según tu modelo
+  @Input('appCancelButton') reservation: any; 
 
   constructor(private readonly _reservationService: ReservationService) {}
 

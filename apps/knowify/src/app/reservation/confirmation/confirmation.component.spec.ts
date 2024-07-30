@@ -6,7 +6,6 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { CancelButtonDirective } from '../../directives/cancel-button-directive';
-import { Region, Reservation } from '../reservation.interfaces';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('ConfirmationComponent', () => {

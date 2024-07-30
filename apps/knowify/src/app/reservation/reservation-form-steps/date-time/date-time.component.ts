@@ -1,10 +1,8 @@
 import {
   Component,
-  EventEmitter,
   Inject,
   Input,
   Optional,
-  Output,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { SharedModule } from '../../../shared/shared.module';

@@ -7,7 +7,7 @@ import {
   Optional,
   Output,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { SharedModule } from '../../../shared/shared.module';
 import { CommonModule } from '@angular/common';
 import { MatStepper } from '@angular/material/stepper';
@@ -20,7 +20,6 @@ import { BackButtonDirective } from '../../../directives/back-button.directive';
   templateUrl: './detail.component.html',
 })
 export class ReservationDetailComponent implements OnInit {
-  @Output() formValue = new EventEmitter<any>();
   @Input() detailsFormGroup!: FormGroup;
 
   constructor(@Optional() @Inject(MatStepper) private stepper: MatStepper) {}

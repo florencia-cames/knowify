@@ -34,7 +34,7 @@ export class ReservationService {
 
       const reservation = {
         name: 'Flor',
-        email: 'flor@gmail.com',
+        email: `flor${i}@gmail.com`,
         phoneNumber: '1234567890',
         partySize: 4,
         childrenCount: 0,

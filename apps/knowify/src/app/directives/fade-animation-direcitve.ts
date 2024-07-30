@@ -12,7 +12,7 @@ import {
   standalone: true,
 })
 export class FadeAnimationDirective implements OnChanges {
-  @Input() appFadeAnimation: boolean = false;
+  @Input() appFadeAnimation = false;
 
   constructor(private el: ElementRef, private renderer: Renderer2) {}
 
