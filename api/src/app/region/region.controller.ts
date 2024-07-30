@@ -2,11 +2,7 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
   Param,
-  Put,
-  Delete,
 } from '@nestjs/common';
 import { RegionService } from './region.service';
 import { Region } from './region';

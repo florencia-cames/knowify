@@ -50,6 +50,7 @@ export class RegionComponent implements OnDestroy {
         switchMap((data: Reservation) => {
           return this._reservationService.getRegions().pipe(
             map((regions) => {
+              console.log(this.reservation);
               this.reservation = data;
               if (!data) return regions;
               return regions.filter((region) => {
@@ -117,7 +118,9 @@ export class RegionComponent implements OnDestroy {
   public checkAvaibilitySuggestion(event: SuggestionResponse): void {
     this.reservation.date = event.date;
     this.reservation.region = event.region.id;
+    this.regionFormGroup.get('region')?.setValue(event.region.id);
     this.checkAvaibility();
+    console.log('hola');
   }
 
   /**
@@ -127,6 +130,7 @@ export class RegionComponent implements OnDestroy {
    */
   public checkAvaibility(): void {
     this.alternativeDates = [];
+    console.log(this.reservation);
     if (this.reservation) {
       const { date, email } = this.reservation;
       const { region } = this.regionFormGroup.value;

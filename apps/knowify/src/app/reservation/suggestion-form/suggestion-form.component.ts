@@ -43,6 +43,7 @@ export class SuggestionFormComponent {
    * @returns {void}
    */
   public onSubmit(): void {
+    console.log('submit', this.suggestedForm.valid)
     if (this.suggestedForm.valid) {
       const selectedDate = this.suggestedForm.value.selectedDate;
       this.dateSelected.emit(selectedDate);
