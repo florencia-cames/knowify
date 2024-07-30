@@ -70,12 +70,6 @@ describe('DateTimeComponent', () => {
     expect(nextSpy).toHaveBeenCalled();
   });
 
-  it('should call backButton method when Back button is clicked', () => {
-    const backSpy = jest.spyOn(component, 'backButton');
-    const backButton = fixture.debugElement.query(By.css('button[matStepperPrevious]'));
-    backButton.triggerEventHandler('click', null);
-    expect(backSpy).toHaveBeenCalled();
-  });
 
   it('should filter dates based on availableDates', () => {
     const date = new Date('2024-07-01');

@@ -10,38 +10,42 @@ import { FormGroup } from '@angular/forms';
 import { SharedModule } from '../../../shared/shared.module';
 import { CommonModule } from '@angular/common';
 import { MatStepper } from '@angular/material/stepper';
+import { BackButtonDirective } from '../../../directives/back-button.directive';
 
 @Component({
   standalone: true,
-  imports: [SharedModule, CommonModule],
+  imports: [SharedModule, CommonModule, BackButtonDirective],
   selector: 'datetime',
   templateUrl: './date-time.component.html',
 })
 export class DateTimeComponent {
-  @Output() formValue = new EventEmitter<any>();
-  @Output() back = new EventEmitter<number>();
   @Input() datetimeFormGroup!: FormGroup;
-  editFormMode = true;
-  initialized = false;
   @Input() public availableDates: Date[] = [];
   @Input() public availableSlots: string[] = [];
   constructor(@Optional() @Inject(MatStepper) private stepper: MatStepper) {}
 
-  backButton() {
-    this.stepper.previous();
-  }
-  goToNextStep() {
+  /**
+   * Advances to the next step in the stepper if the current step is valid.
+   *
+   * @returns {void}
+   */
+  public goToNextStep(): void {
     if (
       this.stepper &&
-      (this.stepper.linear &&
-        this.datetimeFormGroup.valid ||
+      ((this.stepper.linear && this.datetimeFormGroup.valid) ||
         !this.stepper.linear)
     ) {
       this.stepper.next();
     }
   }
 
-  dateFilter = (date: Date | null): boolean => {
+  /**
+   * Filters selectable dates based on available dates.
+   *
+   * @param {Date | null} date - The date to check.
+   * @returns {boolean} Whether the date is available.
+   */
+  public dateFilter = (date: Date | null): boolean => {
     if (!date) return false;
     return this.availableDates.some((availableDate) => {
       return availableDate.toDateString() === date.toDateString();

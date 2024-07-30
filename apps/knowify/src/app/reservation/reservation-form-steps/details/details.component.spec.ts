@@ -79,31 +79,12 @@ describe('ReservationDetailComponent', () => {
     ).toBeTruthy();
   });
 
-  it('should emit form value when submit is called', () => {
-    const formValue = {
-      partySize: 4,
-      childrenCount: 2,
-      smoking: true,
-      birthday: true,
-      birthdayName: 'John',
-    };
-    component.detailsFormGroup.patchValue(formValue);
-    const formValueSpy = jest.spyOn(component.formValue, 'emit');
-    component.submit();
-    expect(formValueSpy).toHaveBeenCalledWith(formValue);
-  });
 
   it('should call stepper.next() when goToNextStep is called and form is valid', () => {
     const nextSpy = jest.spyOn(stepper, 'next');
     component.detailsFormGroup.patchValue({ partySize: 4, childrenCount: 2 });
     component.goToNextStep();
     expect(nextSpy).toHaveBeenCalled();
-  });
-
-  it('should call stepper.previous() when backButton is called', () => {
-    const previousSpy = jest.spyOn(stepper, 'previous');
-    component.backButton();
-    expect(previousSpy).toHaveBeenCalled();
   });
 
   it('should not navigate if form is invalid in goToNextStep', () => {

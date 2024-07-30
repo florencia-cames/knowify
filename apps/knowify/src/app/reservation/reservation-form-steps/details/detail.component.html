@@ -1,4 +1,4 @@
-<form [formGroup]="detailsFormGroup" (ngSubmit)="submit()" class="step-form">
+<form [formGroup]="detailsFormGroup" class="step-form">
   <ng-template matStepLabel>Details</ng-template>
   <h3>Reservation Details</h3>
   <p>Let us know the number of people attending, including children, if any. Indicate if any of the attendees smoke and whether the reservation is for a birthday celebration. If so, provide the name of the person celebrating.</p>
@@ -30,7 +30,7 @@
     <input matInput formControlName="birthdayName" />
   </mat-form-field>
   <div>
-    <button mat-button matStepperPrevious (click)="backButton()">Back</button>
+    <button mat-button appBackButton>Back</button>
     <button mat-button (click)="goToNextStep()" type="submit">Next</button>
   </div>
 </form>

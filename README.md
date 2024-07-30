@@ -9,7 +9,7 @@ This project was built using the following versions:
 - **Docker**: `v27.0.3` (Build `7d4bcd8`)
 
 ## Docker
-Run `docker-compose build --no-cache` and when finish => Run `docker-compose up`
+Run `docker-compose build --no-cache` on root folder and when finish Run `docker-compose up`
 
 ## Running the app locally
 Run `npm install`

@@ -37,16 +37,11 @@ export class ReservationComponent implements OnInit, AfterViewInit {
   @ViewChild(MatStepper) stepper!: MatStepper;
 
   public stepperVisible: boolean = false;
-  public editMode: boolean = false;
   public mainFormGroup: FormGroup;
   public selectedIndex: number = 0;
-  public linear = false;
-
-
   public availableDates: Date[] = [];
   public availableSlots: string[] = [];
   public region: Region[] = [];
-
   private reservation!: Reservation;
 
   constructor(
@@ -87,24 +82,6 @@ export class ReservationComponent implements OnInit, AfterViewInit {
     });
   }
 
-  public getReservation(): Reservation {
-    return this.reservation;
-  }
-  get personalFormGroup(): FormGroup {
-    return this.mainFormGroup.get('personal') as FormGroup;
-  }
-
-  get regionFormGroup(): FormGroup {
-    return this.mainFormGroup.get('region') as FormGroup;
-  }
-
-  get detailsFormGroup(): FormGroup {
-    return this.mainFormGroup.get('details') as FormGroup;
-  }
-
-  get datetimeFormGroup(): FormGroup {
-    return this.mainFormGroup.get('datetime') as FormGroup;
-  }
 
   ngOnInit(): void {
     this.route.data.subscribe(({ data }) => {
@@ -145,17 +122,67 @@ export class ReservationComponent implements OnInit, AfterViewInit {
     }
   }
 
-
-  onStepChange(event: StepperSelectionEvent): void {
-    if (event.selectedIndex === 3) {
-      const reservation = {
-        ...this.reservation,
-        ...this.personalFormGroup.value,
-        ...this.detailsFormGroup.value,
-        ...this.datetimeFormGroup.value,
-      };
-      this._reservationService.notifyStepChange(reservation);
-    }
+/**
+   * Retrieves the current reservation object.
+   * 
+   * @returns {Reservation} The reservation object.
+   */
+  public getReservation(): Reservation {
+    return this.reservation;
   }
+  
+/**
+ * Gets the form group for personal information.
+ * 
+ * @returns {FormGroup} The personal form group.
+ */
+public get personalFormGroup(): FormGroup {
+  return this.mainFormGroup.get('personal') as FormGroup;
+}
+
+/**
+ * Gets the form group for region details.
+ * 
+ * @returns {FormGroup} The region form group.
+ */
+public get regionFormGroup(): FormGroup {
+  return this.mainFormGroup.get('region') as FormGroup;
+}
+
+/**
+ * Gets the form group for reservation details.
+ * 
+ * @returns {FormGroup} The details form group.
+ */
+public get detailsFormGroup(): FormGroup {
+  return this.mainFormGroup.get('details') as FormGroup;
+}
+
+/**
+ * Gets the form group for date and time information.
+ * 
+ * @returns {FormGroup} The datetime form group.
+ */
+public get datetimeFormGroup(): FormGroup {
+  return this.mainFormGroup.get('datetime') as FormGroup;
+}
+
+/**
+ * Handles changes in the stepper and notifies the reservation service.
+ * 
+ * @param {StepperSelectionEvent} event - The stepper selection event.
+ * @returns {void}
+ */
+public onStepChange(event: StepperSelectionEvent): void {
+  if (event.selectedIndex === 3) {
+    const reservation = {
+      ...this.reservation,
+      ...this.personalFormGroup.value,
+      ...this.detailsFormGroup.value,
+      ...this.datetimeFormGroup.value,
+    };
+    this._reservationService.notifyStepChange(reservation);
+  }
+}
 
 }

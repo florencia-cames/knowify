@@ -20,17 +20,15 @@ import { MatStepper } from '@angular/material/stepper';
   templateUrl: './personal-information.component.html',
 })
 export class PersonalInformationComponent {
-  @Output() formValue = new EventEmitter<any>();
   @Input() formGroup!: FormGroup;
 
   constructor(@Optional() @Inject(MatStepper) private stepper: MatStepper) {}
 
-  submit() {
-    if (this.formGroup) {
-      this.formValue.emit(this.formGroup.value);
-    }
-  }
-
+  /**
+   * Advances to the next step in the stepper if the form group is valid or if linear validation is not required.
+   * 
+   * @returns {void}
+   */
   goToNextStep() {
     if (
       this.stepper &&

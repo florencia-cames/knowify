@@ -9,6 +9,11 @@ import { Observable } from 'rxjs';
 export class Dialogservice {
   constructor(public dialog: MatDialog) {}
 
+  /**
+   * Open cancel dialog
+   * @param title 
+   * @returns an observable with a boolean valie
+   */
   openCancelDialog(title: string): Observable<boolean> {
     const dialogRef = this.dialog.open(CancelConfirmationDialogComponent, {
       data: {

@@ -1,12 +1,4 @@
-import {
-  Component,
-  Inject,
-  Input,
-  OnChanges,
-  OnDestroy,
-  Optional,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Inject, Input, OnDestroy, Optional } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { SharedModule } from '../../../shared/shared.module';
 import { MatStepper } from '@angular/material/stepper';
@@ -17,14 +9,7 @@ import {
   SuggestionResponse,
 } from '../../reservation.interfaces';
 import { ReservationService } from '../../reservation.service';
-import {
-  catchError,
-  filter,
-  map,
-  of,
-  Subscription,
-  switchMap,
-} from 'rxjs';
+import { catchError, filter, map, of, Subscription, switchMap } from 'rxjs';
 import { RegionInfoComponent } from '../../../region-info/region-info.component';
 import { DateService } from '../../../services/dates.services';
 import { Router } from '@angular/router';
@@ -80,25 +65,39 @@ export class RegionComponent implements OnDestroy {
         })
       )
       .subscribe((availableRegions: Region[]) => {
-          this.availableRegions = availableRegions;
-          this.alternativeDates = [];
-          if (this.availableRegions.length === 0) {
-            this._snackBar.open('No regions available for the selected criteria.', 'Close', {
+        this.availableRegions = availableRegions;
+        this.alternativeDates = [];
+        if (this.availableRegions.length === 0) {
+          this._snackBar.open(
+            'No regions available for the selected criteria.',
+            'Close',
+            {
               duration: 5000,
-            });
-          }
+            }
+          );
+        }
       });
   }
 
- 
   ngOnDestroy(): void {
     this.dateSubscription.unsubscribe();
   }
 
-  backButton() {
+  /**
+   * Navigates to the previous step in the stepper.
+   *
+   * @returns {void}
+   */
+  public backButton(): void {
     this.stepper.previous();
   }
-  goToNextStep() {
+
+  /**
+   * Advances to the next step in the stepper if the form is valid or if linear validation is not enforced.
+   *
+   * @returns {void}
+   */
+  public goToNextStep(): void {
     if (
       this.stepper &&
       (this.stepper.linear ||
@@ -109,13 +108,24 @@ export class RegionComponent implements OnDestroy {
     }
   }
 
-  checkAvaibilitySuggestion(event: SuggestionResponse) {
+  /**
+   * Updates reservation with the selected date and region from the suggestion, then checks availability.
+   *
+   * @param {SuggestionResponse} event - The suggested date and region.
+   * @returns {void}
+   */
+  public checkAvaibilitySuggestion(event: SuggestionResponse): void {
     this.reservation.date = event.date;
     this.reservation.region = event.region.id;
     this.checkAvaibility();
   }
 
-  checkAvaibility() {
+  /**
+   * Checks reservation availability. Updates or creates reservation if available; suggests alternative dates if not.
+   *
+   * @returns {void}
+   */
+  public checkAvaibility(): void {
     this.alternativeDates = [];
     if (this.reservation) {
       const { date, email } = this.reservation;

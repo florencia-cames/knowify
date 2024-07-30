@@ -92,16 +92,4 @@ describe('PersonalInformationComponent', () => {
     expect(goToNextStepSpy).toHaveBeenCalled();
   });
 
-  it('should emit formValue event with form data', () => {
-    const formValueSpy = jest.spyOn(component.formValue, 'emit');
-    component.formGroup.controls['name'].setValue('John Doe');
-    component.formGroup.controls['email'].setValue('john.doe@example.com');
-    component.formGroup.controls['phoneNumber'].setValue('1234567890');
-    component.submit();
-    expect(formValueSpy).toHaveBeenCalledWith({
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-      phoneNumber: '1234567890',
-    });
-  });
 });

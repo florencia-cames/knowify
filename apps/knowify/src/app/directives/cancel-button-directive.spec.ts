@@ -5,7 +5,6 @@ import { ReservationService } from '../reservation/reservation.service';
 import { Component } from '@angular/core';
 import { Reservation } from '../reservation/reservation.interfaces';
 
-// Crear un componente de prueba que usará la directiva
 @Component({
   template: `<button appCancelButton [appCancelButton]="reservation">Cancel</button>`
 })
@@ -39,22 +38,14 @@ describe('CancelButtonDirective', () => {
   });
 
   it('should call cancelReservation when clicked', () => {
-    // Act
     directiveEl.click();
-
-    // Assert
     expect(reservationService.cancelReservation).toHaveBeenCalledWith('test-hash-id');
   });
 
   it('should not call cancelReservation if reservation is not defined', () => {
-    // Arrange
     fixture.componentInstance.reservation = null;
     fixture.detectChanges();
-
-    // Act
     directiveEl.click();
-
-    // Assert
     expect(reservationService.cancelReservation).not.toHaveBeenCalled();
   });
 });

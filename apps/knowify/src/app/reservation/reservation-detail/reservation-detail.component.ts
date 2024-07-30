@@ -3,14 +3,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReservationService } from '../reservation.service';
 import { switchMap, catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { Reservation, ReservationStatus } from '../reservation.interfaces';
+import {
+  Region,
+  Reservation,
+  ReservationStatus,
+} from '../reservation.interfaces';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DateService } from '../../services/dates.services';
 import { CancelButtonDirective } from '../../directives/cancel-button-directive';
-import {MatCardModule} from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-reservation-resume',
@@ -22,24 +26,20 @@ import {MatCardModule} from '@angular/material/card';
     MatIconModule,
     MatButtonModule,
     CancelButtonDirective,
-    MatCardModule
+    MatCardModule,
   ],
 })
 export class ReservationResumeComponent implements OnInit {
-  reservation: Reservation | null = null;
-  region: any;
+  public reservation: Reservation | null = null;
+  public region!: Region;
 
   constructor(
-    private route: ActivatedRoute,
-    private reservationService: ReservationService,
-    private router: Router,
-    private _snackBar: MatSnackBar,
-    private _dateService: DateService
+    private readonly route: ActivatedRoute,
+    private readonly reservationService: ReservationService,
+    private readonly router: Router,
+    private readonly _snackBar: MatSnackBar,
+    private readonly _dateService: DateService
   ) {}
-
-  editField(step: number) {
-    this.router.navigate(['reservations', this.reservation?.hashId, step])
-  }
 
   ngOnInit(): void {
     this.route.data.subscribe(({ data }) => {
@@ -52,11 +52,39 @@ export class ReservationResumeComponent implements OnInit {
     });
   }
 
-  public get reservationIsPending(): boolean{
+  /**
+   * Navigates to the reservation editing page for a specific step.
+   *
+   * @param {number} step - The step number to navigate to in the reservation editing process.
+   * @returns {void}
+   *
+   * This method constructs a URL using the reservation's hash ID and the specified step number,
+   * then navigates to that URL using the Angular Router.
+   */
+  public editField(step: number): void {
+    this.router.navigate(['reservations', this.reservation?.hashId, step]);
+  }
+
+  /**
+   * Checks if the reservation is pending confirmation.
+   *
+   * @returns {boolean} `true` if the reservation is not confirmed, `false` otherwise.
+   */
+  public get reservationIsPending(): boolean {
     return this.reservation?.status !== ReservationStatus.CONFIRMED;
   }
 
-  confirmReservation(): void {
+  /**
+   * Confirms the reservation if available and updates its status.
+   *
+   * - Checks if the reservation is available on the given date and region.
+   * - Shows a snackbar message if the reservation is no longer available.
+   * - Updates the reservation status to confirmed if available.
+   * - Navigates to the confirmation page if the reservation is confirmed.
+   *
+   * @returns {void}
+   */
+  public confirmReservation(): void {
     if (this.reservation) {
       const { date, region, email, hashId } = this.reservation;
       const formattedDate = this._dateService.formatDate(new Date(date));

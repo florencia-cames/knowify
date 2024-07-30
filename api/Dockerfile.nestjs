@@ -12,7 +12,8 @@ RUN npm install --include=dev --silent
 COPY . .
 
 # Construir la aplicación
-RUN npx nx build api --prod
+RUN npx nx reset
+RUN npx nx build api --prod --verbose
 
 FROM --platform=linux/arm64 node:alpine
 
