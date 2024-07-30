@@ -1,0 +1,20 @@
+services:
+  backend-app:
+    container_name: backend-app
+    restart: always
+    ports:
+      - "3000:3000"
+    build:
+      context: .
+      dockerfile: api/Dockerfile.nestjs
+
+  frontend-app:
+    container_name: frontend-app
+    restart: always
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend-app
+    build:
+      context: .
+      dockerfile: apps/knowify/Dockerfile.angular

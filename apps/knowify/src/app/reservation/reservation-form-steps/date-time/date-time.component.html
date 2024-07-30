@@ -1,0 +1,42 @@
+<form [formGroup]="datetimeFormGroup" class="step-form">
+  <ng-template matStepLabel>Date and Time</ng-template>
+  <h3>Date and Time</h3>
+  <p>
+    Select the date and time for your reservation. The time slot will only be
+    available after you choose a date.
+  </p>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Date</mat-label>
+    <input
+      matInput
+      [matDatepicker]="picker"
+      formControlName="date"
+      [matDatepickerFilter]="dateFilter"
+    />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+    <mat-error *ngIf="datetimeFormGroup.get('date')?.hasError('required')">
+      Date is required.
+    </mat-error>
+    <mat-error *ngIf="datetimeFormGroup.get('date')?.hasError('matDatepickerFilter')">
+      The selected date is not valid.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Time</mat-label>
+    <mat-select formControlName="time">
+      <mat-option *ngFor="let slot of availableSlots" [value]="slot">
+        {{ slot }}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="datetimeFormGroup.get('time')?.hasError('required')">
+      Time is required.
+    </mat-error>
+  </mat-form-field>
+  <div>
+    <button mat-button matStepperPrevious (click)="backButton()">Back</button>
+    <button mat-button (click)="goToNextStep()" type="submit">Next</button>
+  </div>
+</form>

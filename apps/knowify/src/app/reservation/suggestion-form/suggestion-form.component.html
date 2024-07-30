@@ -1,0 +1,24 @@
+<div *ngIf="suggestedDates.length > 0">
+  <p>
+    We're sorry, the selected region is not available for the requested date.
+    You can try another region or select one of the alternative dates:
+  </p>
+  <form [formGroup]="suggestedForm" (ngSubmit)="onSubmit()" class="step-form suggest-form">
+    <mat-radio-group formControlName="selectedDate">
+      <mat-radio-button
+        *ngFor="let suggest of suggestedDates"
+        [value]="suggest"
+      >
+        {{ suggest.date }} {{ suggest.region.name }}
+      </mat-radio-button>
+    </mat-radio-group>
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="!suggestedForm.valid"
+    >
+      {{ 'Make Reservation' }}
+    </button>
+  </form>
+</div>

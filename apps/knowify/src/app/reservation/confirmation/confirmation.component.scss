@@ -1,0 +1,10 @@
+.centered-container {
+    display: flex;
+    justify-content: center; /* Alinea horizontalmente */
+    align-items: center;     /* Alinea verticalmente */
+    height: 100vh;           /* Ocupa toda la altura de la ventana del navegador */
+  }
+  
+  .section {
+    text-align: center;      /* Opcional: centra el texto dentro de .section */
+  }

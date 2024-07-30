@@ -1,0 +1,36 @@
+<form
+  [formGroup]="regionFormGroup"
+  class="step-form region-form"
+  (ngSubmit)="checkAvaibility()"
+  *ngIf="alternativeDates.length === 0"
+>
+  <ng-template matStepLabel>Region</ng-template>
+  <h3>Region</h3>
+  <p>Choose the region where you prefer to make your reservation.</p>
+  <mat-form-field>
+    <mat-label>Region</mat-label>
+    <mat-select formControlName="region" required>
+      <mat-option
+        *ngFor="let region of availableRegions"
+        [value]="region.id"
+        >{{ region.name }} - Seating {{ region.seatingCapacity }} or fewer per
+        table</mat-option
+      >
+    </mat-select>
+  </mat-form-field>
+  <button
+    *ngIf="alternativeDates.length <= 0"
+    mat-raised-button
+    color="primary"
+    type="submit"
+    [disabled]="!regionFormGroup.valid"
+  >
+    {{ 'Make Reservation' }}
+  </button>
+</form>
+<suggestion-form
+class="step-form"
+*ngIf="alternativeDates.length > 0"
+  [suggestedDates]="alternativeDates"
+  (dateSelected)="checkAvaibilitySuggestion($event)"
+></suggestion-form>

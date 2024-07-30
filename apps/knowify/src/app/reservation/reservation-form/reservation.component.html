@@ -1,0 +1,62 @@
+<div class="reservation-header">
+  <h1>Begin Your Reservation</h1>
+  <div [appFadeAnimation]="!stepperVisible" [attr.data-duration]="2">
+    <p>
+      Kafè, a renowned Andorran restaurant now serving the vibrant Manhattan
+      Lower East Side, has recently introduced online reservations to enhance
+      your dining experience. We understand that securing a table at a highly
+      sought-after restaurant can be stressful, especially with fluctuating
+      availability. Our reservation system is designed to handle the competition
+      and provide a smooth booking process for you.
+    </p>
+    <p>
+      As you proceed through the reservation steps, we will collect essential
+      details to ensure your table is reserved seamlessly. If you have any
+      questions about the dining regions available, here's a brief overview:
+    </p>
+    <p>
+      <region-info
+        regionName="Main Hall"
+        tooltipText="Seating 12 or fewer per table."
+      ></region-info>
+      <region-info
+        regionName="Bar"
+        tooltipText="Seating 4 or fewer per table; parties with children not permitted."
+      ></region-info>
+      <region-info
+        regionName="Riverside"
+        tooltipText="Seating 8 or fewer per table."
+      ></region-info>
+      <region-info
+        regionName="Riverside (smoking allowed)"
+        tooltipText="Seating 6 or fewer per table; parties with children not permitted."
+      ></region-info>
+    </p>
+  </div>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="stepperVisible = !stepperVisible;"
+    
+  >
+    {{ stepperVisible ? 'Cancel your reservation' : 'Start Your Reservation' }}
+  </button>
+</div>
+<mat-horizontal-stepper orientation="vertical" #stepper [linear]="true" *ngIf="stepperVisible" (selectionChange)="onStepChange($event)">
+  <mat-step [stepControl]="personalFormGroup" [completed]="selectedIndex > 0">
+    <personal-information [formGroup]="personalFormGroup"></personal-information>
+  </mat-step>
+
+  <mat-step [stepControl]="detailsFormGroup" [completed]="selectedIndex > 1">
+    <reservation-details [detailsFormGroup]="detailsFormGroup"></reservation-details>
+  </mat-step>
+
+  <mat-step [stepControl]="datetimeFormGroup" [completed]="selectedIndex > 2">
+    <datetime [datetimeFormGroup]="datetimeFormGroup" [availableDates]="availableDates" [availableSlots]="availableSlots"></datetime>
+  </mat-step>
+
+  <mat-step [stepControl]="regionFormGroup" [completed]="selectedIndex > 3">
+    <region [regionFormGroup]="regionFormGroup" [regions]="region"></region>
+  </mat-step>
+</mat-horizontal-stepper>
+

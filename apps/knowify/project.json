@@ -8,12 +8,16 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/knowify",
         "index": "apps/knowify/src/index.html",
         "browser": "apps/knowify/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [
+          "zone.js"
+        ],
         "tsConfig": "apps/knowify/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -22,7 +26,10 @@
             "input": "apps/knowify/public"
           }
         ],
-        "styles": ["apps/knowify/src/styles.scss"],
+        "styles": [
+          "@angular/material/prebuilt-themes/azure-blue.css",
+          "apps/knowify/src/styles.scss"
+        ],
         "scripts": []
       },
       "configurations": {
@@ -72,7 +79,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "apps/knowify/jest.config.ts"
       }
@@ -82,7 +91,7 @@
       "options": {
         "buildTarget": "knowify:build",
         "port": 4200,
-        "staticFilePath": "dist/apps/knowify/browser",
+        "staticFilePath": "dist/apps/knowify",
         "spa": true
       }
     }

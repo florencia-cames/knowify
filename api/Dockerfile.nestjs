@@ -1,0 +1,30 @@
+# /Users/florenciacames/Desktop/code/angular-monorepo/api/Dockerfile.nestjs
+FROM --platform=linux/arm64 node:alpine AS builder
+
+WORKDIR /usr/src/app
+
+# Copiar el package.json desde la raíz del monorepo
+COPY package*.json ./
+RUN apk add --update python3 make g++ && rm -rf /var/cache/apk/*
+RUN npm install --include=dev --silent
+
+# Copiar los archivos de la API
+COPY . .
+
+# Construir la aplicación
+RUN npx nx build api --prod
+
+FROM --platform=linux/arm64 node:alpine
+
+WORKDIR /usr/src/app
+
+# Copiar el package.json desde la raíz del monorepo
+COPY package*.json ./
+RUN apk add --update python3 make g++ && rm -rf /var/cache/apk/*
+RUN npm install -g pm2@latest
+RUN npm install --only=production --silent
+
+# Copiar los archivos construidos de la etapa anterior
+COPY --from=builder /usr/src/app/dist/api ./build
+
+ENTRYPOINT ["pm2-runtime", "build/main.js"]

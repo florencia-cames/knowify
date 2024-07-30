@@ -1,0 +1,89 @@
+<div class="centered-container">
+  <div *ngIf="reservation" class="resume">
+    <mat-card class="example-card" appearance="outlined">
+      <mat-card-header>
+        <div mat-card-avatar class="example-header-image"></div>
+        <mat-card-title>Reservation Details</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="section">
+          <h3>
+            Personal Details<mat-icon
+              (click)="editField(0)"
+              aria-hidden="false"
+              aria-label="Example edit icon"
+              fontIcon="edit"
+              *ngIf="reservationIsPending"
+            ></mat-icon>
+          </h3>
+          <p><strong>Name:</strong> {{ reservation.name }}</p>
+          <p><strong>Email:</strong> {{ reservation.email }}</p>
+          <p><strong>Phone Number:</strong> {{ reservation.phoneNumber }}</p>
+        </div>
+
+        <!-- Detalles de la Reserva -->
+        <div class="section">
+          <h3>
+            Reservation Details<mat-icon
+              (click)="editField(1)"
+              aria-hidden="false"
+              aria-label="Example edit icon"
+              fontIcon="edit"
+              *ngIf="reservationIsPending"
+            ></mat-icon>
+          </h3>
+          <p>
+            <strong>Party Size:</strong> {{ reservation.partySize }},
+            <strong>Children Count:</strong> {{ reservation.childrenCount }}
+          </p>
+          <p>
+            <strong>Smoking:</strong> {{ reservation.smoking ? 'Yes' : 'No' }}
+          </p>
+          <p>
+            <strong>Birthday:</strong> {{ reservation.birthday ? 'Yes' : 'No' }}
+          </p>
+          <p *ngIf="reservation.birthday">
+            <strong>Birthday Name:</strong> {{ reservation.birthdayName }}
+          </p>
+        </div>
+        <div class="section">
+          <h3>
+            Date and Time<mat-icon
+              (click)="editField(2)"
+              aria-hidden="false"
+              aria-label="Example edit icon"
+              fontIcon="edit"
+              *ngIf="reservationIsPending"
+            ></mat-icon>
+          </h3>
+          <p>
+            <strong>Date:</strong> {{ reservation.date | date : 'shortDate' }}
+          </p>
+          <p><strong>Time:</strong> {{ reservation.time }}</p>
+        </div>
+
+        <div class="section">
+          <h3>
+            Region<mat-icon
+              (click)="editField(3)"
+              aria-hidden="false"
+              aria-label="Example edit icon"
+              fontIcon="edit"
+              *ngIf="reservationIsPending"
+            ></mat-icon>
+          </h3>
+          <p><strong>Region:</strong> {{ region?.name }}</p>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-flat-button color="warn" [appCancelButton]="reservation"  *ngIf="reservationIsPending">
+          Cancel
+        </button>
+        <button mat-flat-button color="primary" (click)="confirmReservation()"  *ngIf="reservationIsPending">
+          Confirm
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

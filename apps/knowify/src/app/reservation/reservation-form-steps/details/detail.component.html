@@ -1,0 +1,36 @@
+<form [formGroup]="detailsFormGroup" (ngSubmit)="submit()" class="step-form">
+  <ng-template matStepLabel>Details</ng-template>
+  <h3>Reservation Details</h3>
+  <p>Let us know the number of people attending, including children, if any. Indicate if any of the attendees smoke and whether the reservation is for a birthday celebration. If so, provide the name of the person celebrating.</p>
+ 
+  <mat-form-field>
+    <mat-label>Party Size</mat-label>
+    <input matInput type="number" formControlName="partySize" required />
+    <mat-error *ngIf="detailsFormGroup.get('partySize')?.hasError('max')">
+      Party size cannot exceed 12.
+    </mat-error> 
+    <mat-error *ngIf="detailsFormGroup.get('partySize')?.hasError('min')">
+      Party size must be at least 1.
+    </mat-error> 
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Number of Children</mat-label>
+    <input matInput type="number" formControlName="childrenCount" />
+    <mat-error *ngIf="detailsFormGroup.get('childrenCount')?.hasError('min')">
+      Children count must be at least 0.
+    </mat-error>
+    <mat-error *ngIf="detailsFormGroup.get('childrenCount')?.hasError('childrenCountInvalid')">
+      Children count cannot be greater than party size.
+    </mat-error> 
+  </mat-form-field>
+  <mat-checkbox formControlName="smoking">Smoking</mat-checkbox>
+  <mat-checkbox formControlName="birthday">Birthday</mat-checkbox>
+  <mat-form-field *ngIf="detailsFormGroup.get('birthday')?.value">
+    <mat-label>Birthday Name</mat-label>
+    <input matInput formControlName="birthdayName" />
+  </mat-form-field>
+  <div>
+    <button mat-button matStepperPrevious (click)="backButton()">Back</button>
+    <button mat-button (click)="goToNextStep()" type="submit">Next</button>
+  </div>
+</form>

@@ -1,1 +1,17 @@
-<app-nx-welcome></app-nx-welcome> <router-outlet></router-outlet>
+<div *ngIf="loading$ | async" class="loading-overlay">
+  <mat-spinner></mat-spinner>
+</div>
+<header>
+    <nav class="navbar">
+      <div class="navbar-container">
+        <div class="navbar-brand">
+          <a routerLink="/">Home</a>
+        </div>
+        <button class="navbar-toggler" (click)="toggleMenu()">☰</button>
+        <ul [ngClass]="{ 'show': isMenuOpen }" class="navbar-menu">
+          <li><a routerLink="/reservations">Reservations</a></li>
+        </ul>
+      </div>
+    </nav>
+    <router-outlet></router-outlet>
+  </header>
