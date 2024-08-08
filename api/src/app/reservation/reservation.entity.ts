@@ -43,7 +43,7 @@ export class Reservation {
   time: string;
 
   @Column()
-  region: string;
+  region: number;
 
   @Column({ type: 'int', default: ReservationStatus.PENDING })
   status: ReservationStatus;

@@ -38,7 +38,7 @@ export class ReservationController {
   @Get('availability')
   async checkAvailability(
     @Query('date') date: string,
-    @Query('region') region: string,
+    @Query('region') region: number,
     @Query('email') email: string
   ): Promise<boolean> {
     return this.reservationService.checkAvailability(date, region, email);

@@ -45,7 +45,9 @@ export class ReservationResumeComponent implements OnInit {
     this.route.data.subscribe(({ data }) => {
       if (data.reservation) {
         this.reservation = data.reservation;
-        this.region = data.region;
+        console.log(this.reservation);
+        this.region = data.region.filter( (region: Region) => region.id === this.reservation?.region)[0];
+        console.log(this.region);
       } else {
         this.router.navigate(['/reservations']);
       }
@@ -71,7 +73,7 @@ export class ReservationResumeComponent implements OnInit {
    * @returns {boolean} `true` if the reservation is not confirmed, `false` otherwise.
    */
   public get reservationIsPending(): boolean {
-    return this.reservation?.status !== ReservationStatus.CONFIRMED;
+    return this.reservation?.status == ReservationStatus.PENDING;
   }
 
   /**
@@ -87,6 +89,7 @@ export class ReservationResumeComponent implements OnInit {
   public confirmReservation(): void {
     if (this.reservation) {
       const { date, region, email, hashId } = this.reservation;
+      console.log(this.reservation);
       const formattedDate = this._dateService.formatDate(new Date(date));
       this.reservationService
         .checkAvailability(formattedDate, region, email)

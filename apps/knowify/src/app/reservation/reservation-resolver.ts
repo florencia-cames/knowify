@@ -9,7 +9,7 @@ import { catchError, combineLatest, map, Observable, of, switchMap } from "rxjs"
 })
 export class ReservationResolver implements Resolve<{
   reservation: Reservation | null,
-  region: Region | null,
+  region: Region[] | null,
   availableDates: Date[],
   availableSlots: string[],
   step: string | null,
@@ -18,7 +18,7 @@ export class ReservationResolver implements Resolve<{
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<{
     reservation: Reservation | null,
-    region: Region | null,
+    region: Region[] | null,
     availableDates: Date[],
     availableSlots: string[],
     step: string | null,
@@ -43,7 +43,7 @@ export class ReservationResolver implements Resolve<{
     ]).pipe(
       map(([reservation, regions, dates, slots]) => ({
         reservation,  // Now directly the reservation object or null
-        region: regions.length > 0 ? regions[0] : null,  // Adjust according to your requirements
+        region: regions.length > 0 ? regions : [],  // Adjust according to your requirements
         availableDates: dates ?? [],
         availableSlots: slots ?? [],
         step

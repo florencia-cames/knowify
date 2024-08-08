@@ -37,6 +37,12 @@ export class RegionService implements OnModuleInit {
         childrenAllowed: false,
         smokingAllowed: true,
       },
+      {
+        name: 'Bowery',
+        seatingCapacity: 10,
+        childrenAllowed: false,
+        smokingAllowed: true,
+      },
     ];
 
     for (const region of initialRegions) {

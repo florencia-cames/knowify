@@ -43,7 +43,7 @@ export class ReservationService {
         birthdayName: '',
         date: date.toISOString().split('T')[0], // Formato YYYY-MM-DD
         time: '20:00',
-        region: '2',
+        region: 2,
         status: ReservationStatus.CONFIRMED,
         hashId: uuidv4(), // Generar un hashId único para cada reserva
         createdAt: new Date().toISOString(), // Fecha y hora actuales
@@ -111,7 +111,7 @@ export class ReservationService {
 
   async checkAvailability(
     date: string,
-    region: string,
+    region: number,
     email: string
   ): Promise<boolean> {
     // Check if there are confirmed reservations in the specified region
@@ -181,7 +181,7 @@ export class ReservationService {
       .getOne();
 
     if (availableRegion) {
-      const regionData = regions.find((r) => r.name === availableRegion.region);
+      const regionData = regions.find((r) => r.id === availableRegion.region);
       if (regionData) {
         alternativeDates.push({ region: regionData, date });
       }
@@ -204,7 +204,7 @@ export class ReservationService {
           const isAvailable = await this.reservationRepository.count({
             where: {
               date: nextDate,
-              region: regionName,
+              region: region.id,
               status: ReservationStatus.CONFIRMED,
               partySize,
               smoking,
