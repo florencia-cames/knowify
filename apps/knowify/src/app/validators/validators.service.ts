@@ -14,7 +14,7 @@ export class FormValidatorsService {
    * @returns A validator function that checks the validity of childrenCount.
    */
   public childrenCountValidator(partySizeControlName: string): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
+    return (control: AbstractControl): { [key: string]: boolean } | null => {
       const formGroup = control.parent;
 
       if (!formGroup) {
@@ -36,4 +36,5 @@ export class FormValidatorsService {
       return null;
     };
   }
+
 }
