@@ -11,12 +11,14 @@ import {
   BrowserAnimationsModule,
   NoopAnimationsModule,
 } from '@angular/platform-browser/animations';
+import { FormValidatorsService } from '../../../validators/validators.service';
 
 describe('ReservationDetailComponent', () => {
   let component: ReservationDetailComponent;
   let fixture: ComponentFixture<ReservationDetailComponent>;
   let formBuilder: FormBuilder;
   let stepper: MatStepper;
+  let validatorService: FormValidatorsService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -33,6 +35,7 @@ describe('ReservationDetailComponent', () => {
         NoopAnimationsModule,
       ],
       providers: [
+        FormValidatorsService,
         {
           provide: MatStepper,
           useValue: { next: jest.fn(), previous: jest.fn(), linear: true },
@@ -45,13 +48,14 @@ describe('ReservationDetailComponent', () => {
     fixture = TestBed.createComponent(ReservationDetailComponent);
     component = fixture.componentInstance;
     formBuilder = TestBed.inject(FormBuilder);
+    validatorService = TestBed.inject(FormValidatorsService);
 
     component.detailsFormGroup = formBuilder.group({
       partySize: [
         1,
         [Validators.required, Validators.min(1), Validators.max(12)],
       ],
-      childrenCount: [0, [Validators.min(0)]],
+      childrenCount: [0, [Validators.min(0), validatorService.childrenCountValidator('partySize')]],
       smoking: [false],
       birthday: [false],
       birthdayName: [''],
@@ -70,8 +74,9 @@ describe('ReservationDetailComponent', () => {
       partySize: 2,
       childrenCount: 3,
     });
+    component.detailsFormGroup.markAllAsTouched();
+    component.detailsFormGroup.updateValueAndValidity();
     fixture.detectChanges();
-    component.validateChildrenCount();
     expect(
       component.detailsFormGroup
         .get('childrenCount')
@@ -101,7 +106,6 @@ describe('ReservationDetailComponent', () => {
     });
     component.detailsFormGroup.markAllAsTouched();
     fixture.detectChanges();
-    component.validateChildrenCount();
     expect(
       component.detailsFormGroup.get('partySize')?.hasError('min')
     ).toBeTruthy();

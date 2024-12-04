@@ -19,45 +19,11 @@ import { BackButtonDirective } from '../../../directives/back-button.directive';
   selector: 'reservation-details',
   templateUrl: './detail.component.html',
 })
-export class ReservationDetailComponent implements OnInit {
+export class ReservationDetailComponent {
   @Input() detailsFormGroup!: FormGroup;
 
   constructor(@Optional() @Inject(MatStepper) private stepper: MatStepper) {}
-
-  ngOnInit(): void {
-    this.detailsFormGroup.valueChanges.subscribe(() => {
-      this.validateChildrenCount();
-    });
-  }
-
   
-
-  /**
-   * Validates that the number of children does not exceed the party size.
-   *
-   * @returns {void}
-   */
-  validateChildrenCount(): void {
-    const partySizeControl = this.detailsFormGroup.get('partySize');
-    const childrenCountControl = this.detailsFormGroup.get('childrenCount');
-
-    if (partySizeControl && childrenCountControl) {
-      const partySize = partySizeControl.value;
-      const childrenCount = childrenCountControl.value;
-
-      const existingErrors = childrenCountControl.errors || {};
-      if (childrenCount > partySize) {
-        childrenCountControl.setErrors({ childrenCountInvalid: true });
-      } else {
-        const { childrenCountInvalid: removedError, ...restErrors } =
-          existingErrors;
-        childrenCountControl.setErrors(
-          Object.keys(restErrors).length > 0 ? restErrors : null
-        );
-      }
-    }
-  }
-
   /**
    * Advances to the next step in the stepper if the current step is valid.
    *

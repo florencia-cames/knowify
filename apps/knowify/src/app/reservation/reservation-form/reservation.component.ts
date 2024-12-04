@@ -15,6 +15,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { ReservationService } from '../reservation.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormValidatorsService } from '../../validators/validators.service';
 
 @Component({
   selector: 'app-reservation',
@@ -48,7 +49,8 @@ export class ReservationComponent implements OnInit, AfterViewInit {
     private fb: FormBuilder,
     private _reservationService: ReservationService,
     private _snackBar: MatSnackBar,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private _validators: FormValidatorsService
   ) {
     this.mainFormGroup = this.fb.group({
       personal: this.fb.group({
@@ -64,7 +66,7 @@ export class ReservationComponent implements OnInit, AfterViewInit {
           null,
           [Validators.required, Validators.min(1), Validators.max(12)],
         ],
-        childrenCount: [0, [Validators.min(0)]],
+        childrenCount: [0, [Validators.min(0), this._validators.childrenCountValidator('partySize')]],
         smoking: [false],
         birthday: [false],
         birthdayName: [''],

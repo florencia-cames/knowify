@@ -9,7 +9,7 @@ import {
   SuggestionResponse,
 } from '../../reservation.interfaces';
 import { ReservationService } from '../../reservation.service';
-import { catchError, filter, map, of, Subscription, switchMap } from 'rxjs';
+import { catchError, filter, map, of, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { RegionInfoComponent } from '../../../region-info/region-info.component';
 import { DateService } from '../../../services/dates.services';
 import { Router } from '@angular/router';
@@ -32,10 +32,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class RegionComponent implements OnDestroy {
   @Input() regionFormGroup!: FormGroup;
   @Input() regions!: Region[];
-  private dateSubscription: Subscription = new Subscription();
+ 
   public availableRegions: Region[] = [];
   public reservation!: Reservation;
   public alternativeDates: SuggestionResponse[] = [];
+
+  private destroy$ = new Subject<void>(); 
 
   constructor(
     @Optional() @Inject(MatStepper) private stepper: MatStepper,
@@ -62,7 +64,8 @@ export class RegionComponent implements OnDestroy {
               });
             })
           );
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe((availableRegions: Region[]) => {
         this.availableRegions = availableRegions;
@@ -80,7 +83,8 @@ export class RegionComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.dateSubscription.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**
@@ -170,7 +174,8 @@ export class RegionComponent implements OnDestroy {
           }),
           catchError((error) => {
             return of(null);
-          })
+          }),
+          takeUntil(this.destroy$)
         )
         .subscribe((data) => {
           if (data && data.id) {
